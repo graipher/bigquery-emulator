@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math/big"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/goccy/go-json"
@@ -62,7 +63,11 @@ func (t *AVROType) Key() string {
 func (t *AVROType) CastValue(v string) (interface{}, error) {
 	switch FieldType(t.TypeSchema.Type) {
 	case FieldInteger:
-		return strconv.ParseInt(v, 10, 64)
+		if strings.HasPrefix(v, "0x") {
+			return strconv.ParseInt(v[2:], 16, 64)
+		} else {
+			return strconv.ParseInt(v, 10, 64)
+		}
 	case FieldBoolean:
 		return strconv.ParseBool(v)
 	case FieldFloat:
